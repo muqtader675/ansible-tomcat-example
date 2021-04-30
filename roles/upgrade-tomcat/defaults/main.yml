@@ -1,0 +1,12 @@
+---
+# defaults file for upgrade-tomcat
+
+tomcat_old_version: 9.0.40
+
+tomcat_upgrade_version: 9.0.43
+
+confluence_home_dir: '/u01/svc_confl/opt/atlassian/confluence'
+
+home_dir: '/u01/svc_confl'
+
+tomcat_cleanup: True  # Change to true if you then to remove it

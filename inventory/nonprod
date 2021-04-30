@@ -1,0 +1,25 @@
+[devor]
+#ora-confl-ld100 hostname="ora-confl-ld100" region="oregon"
+#orb-confl-ld101 hostname="orb-confl-ld101" region="oregon"
+#ora-confl-ld001 hostname="ora-confl-ld001" region="oregon"
+
+[devva]
+#vaa-confl-ld001 hostname="vaa-confl-ld001" region="north virginia"
+#vab-confl-ld002 hostname="vaa-confl-ld002" region="north virginia"
+#10.47.123.205 hostname="10.47.123.205" region="north virginia"
+
+
+[uator]
+ora-confl-lu000 hostname="ora-confl-lu000" region="oregon" node="primary node"
+orb-confl-lu001 hostname="orb-confl-lu001" region="oregon" node="secondary node"
+
+[uatorm]
+#ora-confl-lu001 hostname="ora-confl-lu001" region="oregon"
+
+[uatva]
+#vaa-confl-lu000 hostname="vaa-confl-lu000" region="north virginia"
+#vab-confl-lu001 hostname="vab-confl-lu001" region="north virginia"
+#vac-confl-lu002 hostname="vac-confl-lu002" region="north virginia"
+
+[uatvam]
+#vaa-confl-lu001 hostname="vaa-confl-lu001" region="north virginia"

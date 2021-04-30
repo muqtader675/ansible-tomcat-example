@@ -1,0 +1,80 @@
+---
+# tasks file for upgrade-tomcat
+
+# Stop Confluence only if region is not virginia 
+- name: Stop Confluence
+  shell: bash {{ confluence_home_dir }}/bin/stop-confluence.sh
+  when: region != "north virginia"
+
+- name: Create Directory
+  file:
+    path: "{{ home_dir }}/{{ item }}"
+    state: directory
+    mode: 0700
+  with_items:
+    - tmp
+    - tomcat
+    
+- name: Download Tomcat
+  get_url:
+    url: "https://archive.apache.org/dist/tomcat/tomcat-9/v{{ tomcat_upgrade_version }}/bin/apache-tomcat-{{ tomcat_upgrade_version }}.zip"
+    dest: '{{ home_dir }}/tomcat/apache-tomcat-{{ tomcat_upgrade_version }}.zip'
+    mode: '0700'
+
+- name: Backup Bin
+  archive:
+    path: "{{ confluence_home_dir }}/bin"
+    dest: "{{ home_dir }}/tmp/bin.tar.gz"
+    
+
+- name: Backup Lib
+  archive:
+    path: "{{ confluence_home_dir }}/lib"
+    dest: "{{ home_dir }}/tmp/lib.tar.gz"
+
+- name: Extract Tomcat
+  unarchive:
+    src: "{{ home_dir }}/tomcat/apache-tomcat-{{ tomcat_upgrade_version }}.zip"
+    dest: "{{ home_dir }}/tomcat"
+    remote_src: yes
+
+- name: Copy Tomcat Bin to Confluence Bin
+  copy:
+    src: "{{ home_dir }}/tomcat/apache-tomcat-{{ tomcat_upgrade_version }}/bin/"
+    dest: "{{ confluence_home_dir }}/bin/"
+    remote_src: yes
+
+- name: Give Executeable perms to Catalina
+  file:
+    path: "{{ confluence_home_dir }}/bin/catalina.sh"
+    state: file
+    mode: "0700"
+
+- name: Copy Tomcat Lib to Confluence Lib
+  copy:
+    src: "{{ home_dir }}/tomcat/apache-tomcat-{{ tomcat_upgrade_version }}/lib/"
+    dest: "{{ confluence_home_dir }}/lib/"
+    remote_src: yes
+
+# Start Confluence only if region is not virginia 
+- name: Start Confluence
+  shell: nohup bash {{ confluence_home_dir }}/bin/catalina.sh start
+  when: region != "north virginia"
+
+- name: Check Confluence 
+  shell: ps -ef | grep -i java
+  register: confluence_status
+  when: region != "north virginia"
+
+#- debug: var=confluence_status.stdout
+
+- name: Wait for confluence to be available
+  wait_for:
+    timeout: 300
+  when: region != "north virginia"
+
+- name: Remove Tomcat Folder
+  file:
+    path: "{{ home_dir }}/tomcat"
+    state: absent
+  when: tomcat_cleanup == True
